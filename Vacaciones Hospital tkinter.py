@@ -27,15 +27,17 @@ class AplicacionVacaciones:
         tk.Label(self.root, text="Edad:").grid(row=2, column=0, padx=10, pady=5, sticky="w")
         tk.Label(self.root, text="Área de trabajo:").grid(row=3, column=0, padx=10, pady=5, sticky="w")
         tk.Label(self.root, text="Hora de entrada:").grid(row=4, column=0, padx=10, pady=5, sticky="w")
+        tk.Label(self.root, text="Hora de salida:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
         
         self.edad_entry = tk.Entry(self.root)
         self.area_entry = tk.Entry(self.root)
         self.entrada_entry = tk.Entry(self.root)
+        self.salida_entry = tk.Entry(self.root)
 
         self.edad_entry.grid(row=2, column=1, padx=10, pady=5)
         self.area_entry.grid(row=3, column=1, padx=10, pady=5)
         self.entrada_entry.grid(row=4, column=1, padx=10, pady=5)
-        
+        self.salida_entry.grid(row=5, column=1, padx=10, pady=5)
         tk.Button(self.root, text="Registrar", command=self.registrar).grid(row=7, column=0, columnspan=2, pady=10)
 
         tk.Label(self.root, text="Datos registrados:").grid(row=8, column=0, columnspan=2, pady=10)
@@ -49,6 +51,7 @@ class AplicacionVacaciones:
         edad = self.edad_entry.get()
         area = self.area_entry.get()
         entrada = self.entrada_entry.get()
+        salida = self.salida_entry.get()
 
         if not trabajador or not periodo:
             messagebox.showerror("Error", "Selecciona un trabajador y un periodo.")
@@ -62,7 +65,7 @@ class AplicacionVacaciones:
             messagebox.showerror("Error", f"El periodo '{periodo}' ya ha sido seleccionado.")
             return
 
-        if not (edad and area and entrada):
+        if not (edad and area and entrada and salida):
             messagebox.showerror("Error", "Todos los campos deben ser completados.")
             return
 
@@ -71,6 +74,7 @@ class AplicacionVacaciones:
             "edad": edad,
             "area": area,
             "entrada": entrada,
+            "salida": salida,
         }
 
         messagebox.showinfo("Éxito", f"{trabajador} ha sido registrado correctamente.")
@@ -86,6 +90,7 @@ class AplicacionVacaciones:
             self.lista_texto.insert(tk.END, f"  Edad: {info['edad']}\n")
             self.lista_texto.insert(tk.END, f"  Área: {info['area']}\n")
             self.lista_texto.insert(tk.END, f"  Entrada: {info['entrada']}\n")
+            self.lista_texto.insert(tk.END, f"  Salida: {info['salida']}\n")
             self.lista_texto.insert(tk.END, "-"*50 + "\n")
         self.lista_texto.config(state="disabled")
 
@@ -93,7 +98,8 @@ class AplicacionVacaciones:
         self.edad_entry.delete(0, tk.END)
         self.area_entry.delete(0, tk.END)
         self.entrada_entry.delete(0, tk.END)
-
+        self.salida_entry.delete(0, tk.END)
+        
 if __name__ == "__main__":
     ventana = tk.Tk()
     app = AplicacionVacaciones(ventana)
