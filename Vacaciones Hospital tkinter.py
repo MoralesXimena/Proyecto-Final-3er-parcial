@@ -2,9 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 
-
 registros = []
-
 
 def guardar_datos():
     try:
@@ -26,8 +24,10 @@ def guardar_datos():
         "Teléfono": telefono_var.get(),
         "Correo": correo_var.get(),
         "Fecha Ingreso": fecha_ingreso_var.get(),
+        "Área Trabajo": area_trabajo_var.get(),
         "Jornada": jornada_var.get(),
         "Días": dias_var.get(),
+        "Periodo Vacacional": periodo_vacacional_var.get(),
         "Asistencias": asistencias,
         "Inasistencias": inasistencias,
         "Retardos": retardos
@@ -42,36 +42,34 @@ def guardar_datos():
     messagebox.showinfo("Éxito", "Registro guardado correctamente.")
     limpiar_campos()
 
-
 def actualizar_historial():
     historial.delete(*historial.get_children())
     for i, reg in enumerate(registros, start=1):
         historial.insert("", "end", values=(
             i,
             reg["Nombre"],
+            reg["Área Trabajo"],
             reg["Jornada"],
             reg["Días"],
-            reg["Fecha Ingreso"],
+            reg["Periodo Vacacional"],
             reg["Asistencias"],
             reg["Inasistencias"],
             reg["Retardos"]
         ))
 
-
 def limpiar_campos():
     for var in [
         nombre_var, fecha_nac_var, tipo_contrato_var, sexo_var, grado_estudio_var,
         cedula_var, domicilio_var, telefono_var, correo_var, fecha_ingreso_var,
-        jornada_var, dias_var, asistencias_var, inasistencias_var, retardos_var
+        area_trabajo_var, jornada_var, dias_var, periodo_vacacional_var,
+        asistencias_var, inasistencias_var, retardos_var
     ]:
         var.set("")
 
-
 ventana = tk.Tk()
 ventana.title("Control de Asistencias")
-ventana.geometry("1000x650")
+ventana.geometry("1200x650")
 ventana.config(bg="lightpink")
-
 
 nombre_var = tk.StringVar()
 fecha_nac_var = tk.StringVar()
@@ -83,12 +81,13 @@ domicilio_var = tk.StringVar()
 telefono_var = tk.StringVar()
 correo_var = tk.StringVar()
 fecha_ingreso_var = tk.StringVar()
+area_trabajo_var = tk.StringVar()
 jornada_var = tk.StringVar()
 dias_var = tk.StringVar()
+periodo_vacacional_var = tk.StringVar()
 asistencias_var = tk.StringVar()
 inasistencias_var = tk.StringVar()
 retardos_var = tk.StringVar()
-
 
 form_frame = tk.LabelFrame(ventana, text="Registro del trabajador", padx=10, pady=10)
 form_frame.pack(fill="x", padx=10, pady=5)
@@ -103,7 +102,8 @@ fields = [
     ("Domicilio", domicilio_var),
     ("Teléfono", telefono_var),
     ("Correo Electrónico", correo_var),
-    ("Fecha de ingreso", fecha_ingreso_var)
+    ("Fecha de ingreso", fecha_ingreso_var),
+    ("Área de trabajo", area_trabajo_var)
 ]
 
 for i, (label_text, var) in enumerate(fields):
@@ -122,23 +122,31 @@ dias_menu = ttk.Combobox(form_frame, textvariable=dias_var, values=[
 ])
 dias_menu.grid(row=len(fields)+1, column=1, sticky="w", pady=2)
 
-tk.Label(form_frame, text="Asistencias").grid(row=len(fields)+2, column=0, sticky="e")
-tk.Entry(form_frame, textvariable=asistencias_var, width=10).grid(row=len(fields)+2, column=1, sticky="w", pady=2)
+tk.Label(form_frame, text="Periodo Vacacional").grid(row=len(fields)+3, column=0, sticky="e")
+periodo_vacacional_menu = ttk.Combobox(form_frame, textvariable=periodo_vacacional_var, values=[
+    "Enero - Febrero",
+    "Marzo - Abril",
+    "Mayo - Junio",
+    "Julio - Agosto",
+    "Noviembre - Diciembre",
+])
+periodo_vacacional_menu.grid(row=len(fields)+3, column=1, sticky="w", pady=2)
 
-tk.Label(form_frame, text="Inasistencias").grid(row=len(fields)+3, column=0, sticky="e")
-tk.Entry(form_frame, textvariable=inasistencias_var, width=10).grid(row=len(fields)+3, column=1, sticky="w", pady=2)
+tk.Label(form_frame, text="Asistencias").grid(row=len(fields)+4, column=0, sticky="e")
+tk.Entry(form_frame, textvariable=asistencias_var, width=10).grid(row=len(fields)+4, column=1, sticky="w", pady=2)
 
-tk.Label(form_frame, text="Retardos").grid(row=len(fields)+4, column=0, sticky="e")
-tk.Entry(form_frame, textvariable=retardos_var, width=10).grid(row=len(fields)+4, column=1, sticky="w", pady=2)
+tk.Label(form_frame, text="Inasistencias").grid(row=len(fields)+5, column=0, sticky="e")
+tk.Entry(form_frame, textvariable=inasistencias_var, width=10).grid(row=len(fields)+5, column=1, sticky="w", pady=2)
 
+tk.Label(form_frame, text="Retardos").grid(row=len(fields)+6, column=0, sticky="e")
+tk.Entry(form_frame, textvariable=retardos_var, width=10).grid(row=len(fields)+6, column=1, sticky="w", pady=2)
 
 tk.Button(ventana, text="Guardar Registro", command=guardar_datos, bg="green", fg="white").pack(pady=10)
-
 
 historial_frame = tk.LabelFrame(ventana, text="Historial de Trabajadores")
 historial_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
-cols = ("#", "Nombre", "Jornada", "Días", "Fecha Ingreso", "Asistencias", "Inasistencias", "Retardos")
+cols = ("#", "Nombre", "Área Trabajo", "Jornada", "Días Laborales", "Periodo Vacacional", "Asistencias", "Inasistencias", "Retardos")
 historial = ttk.Treeview(historial_frame, columns=cols, show="headings")
 for col in cols:
     historial.heading(col, text=col)
@@ -146,4 +154,4 @@ for col in cols:
 
 historial.pack(fill="both", expand=True)
 
-ventana.mainloop()                       
+ventana.mainloop()    
